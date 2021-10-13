@@ -1,0 +1,35 @@
+{
+    "2": {
+        "id": 2,
+        "nome": "Paciente4",
+        "idade": "23",
+        "sexo": "M",
+        "medicao": true,
+        "saturacao": 121,
+        "pressao": 111,
+        "batimento": 137,
+        "temperatura": 56.300000000000004
+    },
+    "3": {
+        "id": 3,
+        "nome": "Paciente4",
+        "idade": "60",
+        "sexo": "M",
+        "medicao": true,
+        "saturacao": 58,
+        "pressao": 130,
+        "batimento": 73,
+        "temperatura": 30.80000000000009
+    },
+    "4": {
+        "id": 4,
+        "nome": "Paciente5",
+        "idade": "35",
+        "sexo": "F",
+        "medicao": true,
+        "saturacao": 61,
+        "pressao": 155,
+        "batimento": 62,
+        "temperatura": 40.599999999999916
+    }
+}
