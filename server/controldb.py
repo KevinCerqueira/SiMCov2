@@ -15,6 +15,7 @@
 import os
 import sys
 import json
+import pymongo
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 
@@ -54,7 +55,18 @@ class ControlDB:
 		except:
 			return False
 	
+	def checkDoctor(self, username):
+		try:
+			doctor = self.doctor_db.find_one({'username': username})
+			if(doctor == None): return False
+			return True
+		except:
+			return True
+	
 	def createDoctor(self, username, auth):
+		if(self.checkDoctor(username)):
+			return False
+			
 		new_doctor = {'username': username, 'auth': auth}
 		try:
 			self.doctor_db.insert_one(new_doctor)
@@ -92,8 +104,11 @@ class ControlDB:
 	def getPatients(self, doctor_id):
 		doctor_id = ObjectId(doctor_id)
 		try:
-			patients = self.patient_db.find({'doctor': doctor_id})
-			return json.load(patients)
+			patients = []
+			query = self.patient_db.find({'doctor': doctor_id}).sort('nome', pymongo.DESCENDING)
+			for patient in query:
+				patients.append({'id': str(patient['_id']), 'nome': patient['nome'], 'idade': patient['idade'], 'sexo': patient['sexo'], 'medicao': patient['medicao'], 'saturacao': patient['saturacao'], 'pressao': patient['pressao'], 'batimento': patient['batimento'], 'temperatura': patient['temperatura']})
+			return patients
 		except:
 			return None
 	
@@ -132,6 +147,7 @@ class ControlDB:
 	def getDoctorByToken(self, auth):
 		try:
 			doctor = self.doctor_db.find_one({'auth': auth})
+			print(doctor['_id'])
 			return doctor
 		except:
 			return None

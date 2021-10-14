@@ -8,7 +8,7 @@ from controldb import ControlDB
 class MyBroker:
 
 	HOST = 'localhost'
-	PORT = 50000
+	PORT = 60000
 	
 	logger = None
 	topic = ''

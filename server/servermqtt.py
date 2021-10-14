@@ -22,10 +22,10 @@ from collections import deque
 from controldb import ControlDB
 from controllevels import ControlLevels
 
-class Server:
+class ServerMQTT:
 
 	HOST = 'localhost'
-	PORT = 50000
+	PORT = 60000
 	
 	# Servidor
 	server_socket = None
@@ -127,30 +127,16 @@ class Server:
 		if(method == 'POST'):
 			if(path == '/register/patient'):
 				self.registerPatient(token, data)
-			elif(path == '/register/doctor'):
-				self.registerDoctor(data)
-			elif(path == '/login'):
-				self.login(data)
+			# elif(path == '/register/doctor'):
+			# 	self.registerDoctor(data)
+			# elif(path == '/login'):
+			# 	self.login(data)
 			else:
 				self.routeNotFound()
 				
 		# Requisições do tipo GET: retornar dados.
 		elif(method == 'GET'):
-			if(path == '/'):
-				self.sendToClientOk('Bem vindo ao sistema!')
-			elif(path == '/get/patients'):
-				self.getPatients(token)
-			elif('/get/patient/' in path):
-				patient_id = path.replace('/get/patient/', '')
-				self.getPatient(token, patient_id)
-			elif('/get/list/priority'):
-				self.getListPriority(token)
-			elif(path == '/close-connection'):
-				self.closeConnection()
-			elif(path == '/close-socket'):
-				self.closeSocket()
-			else:
-				self.routeNotFound()
+			self.routeNotFound()
 				
 		# Requisições do tipo PATCH: para atualizações parciais de dados.
 		elif(method == 'PATCH'):
@@ -200,23 +186,23 @@ class Server:
 	def sendToClientOk(self, obj):
 		response = json.dumps({'success': True, 'data': obj})
 		print(response)
-		return self.client_mqtt.publish(self.topic, bytes(response.encode('utf-8')))
+		return
+		# return self.client_mqtt.publish(self.topic, bytes(response.encode('utf-8')))
 	
 	# Envia dados para o cliente em caso de erro
 	def sendToClientError(self, msg):
 		response = json.dumps({'success': False, 'error': msg})
 		print(response)
-		return self.client_mqtt.publish(self.topic, bytes(response.encode('utf-8')))
+		return
+		# return self.client_mqtt.publish(self.topic, bytes(response.encode('utf-8')))
 	
 	# Autoriza ou não a autenticação do usuário
 	def middleware(self, token):
 		if(token == None):
-			response = json.dumps({'success': False, 'error': 'Usuario nao autenticado.'})
-			self.client_mqtt.publish(self.topic, bytes(response.encode('utf-8')))
+			self.sendToClientError('Usuario nao autenticado.')
 			return False
 		if(not self.controldb.checkToken(token)):
-			response = json.dumps({'success': False, 'error': 'Autenticacao invalida.'})
-			self.client_mqtt.publish(self.topic, bytes(response.encode('utf-8')))
+			self.sendToClientError('Autenticacao invalida.')
 			return False
 		return True
 	
@@ -316,6 +302,6 @@ class Server:
 		self.sendToClientOk(list_priority)
 
 if __name__ == '__main__':
-	server = Server()
+	server = ServerMQTT()
 	server.work()
 			

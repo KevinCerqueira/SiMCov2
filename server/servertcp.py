@@ -151,7 +151,7 @@ class ServerTCP:
 			if('/update/' in path):
 				attribute = path.replace('/update/', '') # /saturacao/batimento/pressao/temperatura
 				if(attribute in ['saturacao', 'batimento', 'pressao', 'temperatura']):
-					self.updateAttribute(client, token, data, attribute)
+					self.updatePacient(client, token, data, attribute)
 				else:
 					self.routeNotFound(client)
 			else:
@@ -160,7 +160,7 @@ class ServerTCP:
 		# Requisições do tipo PUT: para atualizações completas.
 		elif(method == 'PUT'):
 			if(path == '/update/patient'):
-				self.updatePatient(client, token, data)
+				self.updatePatientGeneral(client, token, data)
 			else:
 				self.routeNotFound(client)
 				
@@ -244,63 +244,80 @@ class ServerTCP:
 		if(not ('nome' in data and 'sexo' in data and 'idade' in data)):
 			return self.sendToClientError(client, "Parametros 'nome', 'idade' e 'sexo' são necessários para criar um paciente")
 		doctor = self.controldb.getDoctorByToken(token)
-		return self.sendToClientOk(client, {'id': self.controldb.createPatient(doctor['username'], data)})
+		if(doctor == None):
+			self.sendToClientError(client, 'Este doutor nao existe na base de dados.')
+		process = self.controldb.createPatient(doctor['_id'], data)
+		if(isinstance(process, str)):
+			self.sendToClientError(client, process)
+		return self.sendToClientOk(client, {'msg': process})
 	
 	# Retorna todos os pacientes
 	def getPatients(self, client, token, data):
 		doctor = self.controldb.getDoctorByToken(token)
-		return self.sendToClientOk(client, {'patients': self.controldb.getPatientsByDoctor(doctor['username'])})
+		if(doctor == None):
+			self.sendToClientError(client, 'Este doutor nao existe na base de dados.')
+		return self.sendToClientOk(client, {'patients': self.controldb.getPatients(doctor['_id'])})
 	
 	# Retorna um paciente em específico
 	def getPatient(self, client, token, data):
 		doctor = self.controldb.getDoctorByToken(token)
-		return self.sendToClientOk(client, self.controldb.getPatientByDoctor(doctor['username'], data))
+		if(doctor == None):
+			self.sendToClientError(client, 'Este doutor nao existe na base de dados.')
+		return self.sendToClientOk(client, self.controldb.getPatient(data['id']))
 	
 	# Atualiza determinado atributo de um paciente
-	def updateAttribute(self, client, token, data, attr):
+	def updatePacient(self, client, token, data, attr):
 		if(not ('id' in data and 'value' in data)):
 			return self.sendToClientError(client, "Parametros 'id' e 'value' são necessários para atualizar o paciente")
 		doctor = self.controldb.getDoctorByToken(token)
+		if(doctor == None):
+			self.sendToClientError(client, 'Este doutor nao existe na base de dados.')
 		patient_id = data['id']
-		value_attr = data['value'] 
-		success = self.controldb.updateAttribute(doctor['username'], patient_id, attr, value_attr)
+		values = {attr: data['value']}
+		success = self.controldb.updatePatient(patient_id, values)
 		if(success == False):
 			return self.sendToClientError(client, 'Nao foi possivel atualizar medicao.')
 		
-		patients = self.controldb.getPatientsByDoctor(doctor['username'])
+		patients = self.controldb.getPatients(doctor['_id'])
 		controllevels = ControlLevels(patients)
 		list_priority = controllevels.process()
 		
 		return self.sendToClientOk(client, list_priority)
 	
 	# Atualiza todos os atributos de um paciente
-	def updatePatient(self, client, token, data):
+	def updatePatientGeneral(self, client, token, data):
 		doctor = self.controldb.getDoctorByToken(token)
+		if(doctor == None):
+			self.sendToClientError(client, 'Este doutor nao existe na base de dados.')
 		patient_id = data['id']
-		success = self.controldb.updatePatient(doctor['username'], patient_id, data)
+		success = self.controldb.updatePatient(patient_id, data)
 		if(success == False):
 			return self.sendToClientError(client, 'Nao foi possivel atualizar medicoes.')
 		
-		patients = self.controldb.getPatientsByDoctor(doctor['username'])
+		patients = self.controldb.getPatients(doctor['_id'])
 		controllevels = ControlLevels(patients)
 		list_priority = controllevels.process()
 		
-		return self.sendToClientOk(client, list_priority)
+	# 	return self.sendToClientOk(client, list_priority)
 	
 	# Deleta um paciente
 	def deletePatient(self, client, token, data):
 		if(not ('id' in data)):
 			return self.sendToClientError(client, "Parametros 'id' necessários para deletar o paciente")
 		doctor = self.controldb.getDoctorByToken(token)
+		if(doctor == None):
+			self.sendToClientError(client, 'Este doutor nao existe na base de dados.')
 		patient_id = data['id']
-		success = self.controldb.deletePatient(doctor['username'], patient_id)
+		success = self.controldb.deletePatient(patient_id)
 		if(success == False):
 			return self.sendToClientError(client, 'Nao foi possivel deletar o paciente.')
 		return self.sendToClientOk(client, success)
 	
 	def getListPriority(self, client, token):
 		doctor = self.controldb.getDoctorByToken(token)
-		patients = self.controldb.getPatientsByDoctor(doctor['username'])
+		if(doctor == None):
+			self.sendToClientError(client, 'Este doutor nao existe na base de dados.')
+		patients = self.controldb.getPatients(doctor['_id'])
 		controllevels = ControlLevels(patients)
 		list_priority = controllevels.process()
 		self.sendToClientOk(client, list_priority)

@@ -73,7 +73,7 @@
 				if (response.success) {
 					Swal.fire(
 						'Paciente cadastrado com sucesso! ',
-						'ID: ' + response.data.id,
+						'A operação foi bem sucedida, o paciente foi cadastrado.',
 						'success'
 					);
 					$('.inputs').val('');
