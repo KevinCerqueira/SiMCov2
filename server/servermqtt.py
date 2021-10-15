@@ -24,8 +24,8 @@ from controllevels import ControlLevels
 
 class ServerMQTT:
 
-	HOST = 'localhost'
-	PORT = 60000
+	HOST = 'mqtt.eclipseprojects.io'
+	PORT = 1883
 	
 	# Servidor
 	server_socket = None
@@ -46,7 +46,8 @@ class ServerMQTT:
 	
 	def __init__(self):
 		# Iniciando o Server
-		self.client_mqtt = mqtt.Client()
+		self.client_mqtt = mqtt.Client('SiMCov_subscriber')
+		# self.client_mqtt.connect(self.HOST)
 		self.client_mqtt.connect(self.HOST, self.PORT)
 		self.topic = 'SIMCOV/channel1'
 		self.controldb = ControlDB()
@@ -80,29 +81,30 @@ class ServerMQTT:
 		path = ''
 		data = None
 		token = ''
+		
 		# Verificando se é realmente o cliente
 		if(not 'ClientController' in request):
 			print('Conexão externa.')
 			return
 		
-		content_parts = request.split(' ')
-		method = content_parts[0].replace(' ', '')
+		content_parts = request.replace('\\', '').split(' ')
+		
+		method = (content_parts[0].replace('"', '')).replace(' ', '')
 		path = content_parts[1].replace(' ', '')
 
 		request = request.replace('\r', '')
 
 		# Buscando o campo 'Authorization' na requisicao
-		for itr in str(request).split('\n'):
+		for itr in str(request).split('\\r\\n'):
 			if('Authorization:' in itr):
 				itr = itr.replace(' ', '')
 				token = str(re.sub('Basic|Bearer|Authorization:', '', itr))
 				# auth_decode = base64.b64decode(auth).decode('utf-8')
-
 		# Buscando por dados enviados na requisicao
 		for index in request:
 			if(index == '{'):
-				data = json.loads(request[request.find('{') :])
-				
+				data = json.loads(request[request.find('{') : request.find('}') + 1].replace("\\", ""))
+		
 		# Adicionando a requisição a fila de requisições
 		self.queue_request.append({'method': method, 'path': path, 'data': data, 'token': token})
 	
@@ -116,30 +118,19 @@ class ServerMQTT:
 	
 	# Função responsável pelo roteamente, identifica os metodos e as rotas requisitadas
 	def routing(self, method, path, data, token):
+		print('...')
+		print({'method': method, 'path': path, 'data': data, 'token': token})
+		print('...')
+		
 		if(method == ''):
 			self.sendToClientError('Requisicao invalida')
 		
 		# Verificando autenticação
-		if(((method in ['PUT', 'PATCH', 'DELETE', 'GET'] or path == '/register/patient') and (not path == '/')) and (not self.middleware(token))):
+		if(not self.middleware(token)):
 			return
-		
-		# Requisições do tipo POST: para a criação de novos dados.
-		if(method == 'POST'):
-			if(path == '/register/patient'):
-				self.registerPatient(token, data)
-			# elif(path == '/register/doctor'):
-			# 	self.registerDoctor(data)
-			# elif(path == '/login'):
-			# 	self.login(data)
-			else:
-				self.routeNotFound()
-				
-		# Requisições do tipo GET: retornar dados.
-		elif(method == 'GET'):
-			self.routeNotFound()
 				
 		# Requisições do tipo PATCH: para atualizações parciais de dados.
-		elif(method == 'PATCH'):
+		if(method == 'PATCH'):
 			if('/update/' in path):
 				attribute = path.replace('/update/', '') # /saturacao/batimento/pressao/temperatura
 				if(attribute in ['saturacao', 'batimento', 'pressao', 'temperatura']):
@@ -148,26 +139,11 @@ class ServerMQTT:
 					self.routeNotFound()
 			else:
 				self.routeNotFound()
-				
-		# Requisições do tipo PUT: para atualizações completas.
-		elif(method == 'PUT'):
-			if(path == '/update/patient'):
-				self.updatePatient(token, data)
-			else:
-				self.routeNotFound()
-				
-		# Requisições do tipo DELETE: para deleções.
-		elif(method == 'DELETE'):
-			if(path == '/delete/patient'):
-				self.deletePatient(token, data)
-			else:
-				self.routeNotFound()
+		
 		else:
 			self.routeNotFound()
 		
 		return
-		# self.server_socket.close()
-		# sys.exit()
 	
 	# Fecha a conexão do cliente
 	def closeConnection(self, client):
@@ -210,96 +186,27 @@ class ServerMQTT:
 	def routeNotFound(self):
 		return self.sendToClientError('Rota nao encontrada')
 	
-	# Registra um novo medico.
-	def registerDoctor(self, data):
-		auth = "{}:{}".format(data['username'], data['password'])
-		token = base64.b64encode(auth.encode('utf-8')).decode('utf-8')
-		success = self.controldb.createDoctor(data['username'], token)
-		response = {'token': token}
-		
-		if(not success):
-			return self.sendToClientError('Este nome ja esta em uso! Por favor, escolha outro.')
-			
-		return self.sendToClientOk(response)
-	
-	# Loga o medico retornando o token de acesso
-	def login(self, data):
-		auth = "{}:{}".format(data['username'], data['password'])
-		token = self.controldb.getTokenByLogin(data['username'], base64.b64encode(auth.encode('utf-8')).decode('utf-8'))
-		response = {'token': token}
-		
-		if(token == None):
-			return self.sendToClientError('Credenciais invalidas!')
-			
-		return self.sendToClientOk(response)
-	
-	# Registra um novo paciente
-	def registerPatient(self, token, data):
-		if(not ('nome' in data and 'sexo' in data and 'idade' in data)):
-			return self.sendToClientError("Parametros 'nome', 'idade' e 'sexo' são necessários para criar um paciente")
-		doctor = self.controldb.getDoctorByToken(token)
-		return self.sendToClientOk({'id': self.controldb.createPatient(doctor['_id'], data)})
-	
-	# Retorna todos os pacientes
-	def getPatients(self, token):
-		doctor = self.controldb.getDoctorByToken(token)
-		if(doctor == None):
-			return self.sendToClientError("Doutor nao existe na base de dados")
-		
-		return self.sendToClientOk({'patients': self.controldb.getPatients(doctor['_id'])})
-	
-	# Retorna um paciente em específico
-	def getPatient(self, token, data):
-		return self.sendToClientOk(self.controldb.getPatient(data))
-	
 	# Atualiza determinado atributo de um paciente
 	def updateAttribute(self, token, data, attr):
 		if(not ('id' in data and 'value' in data)):
 			return self.sendToClientError("Parametros 'id' e 'value' são necessários para atualizar o paciente")
-		doctor = self.controldb.getDoctorByToken(token)
+		
 		patient_id = data['id']
-		values = {attr: data['value']}
-		success = self.controldb.updatePatient(patient_id, values)
+		value = {attr: data['value']}
+		success = self.controldb.updatePatient(patient_id, value)
 		if(success == False):
 			return self.sendToClientError('Nao foi possivel atualizar medicao.')
 		
-		patients = self.controldb.getPatients(doctor['_id'])
-		controllevels = ControlLevels(patients)
-		list_priority = controllevels.process()
-		
-		return self.sendToClientOk(list_priority)
+		return self.sendToClientOk(success)
 	
 	# Atualiza todos os atributos de um paciente
 	def updatePatient(self, token, data):
-		doctor = self.controldb.getDoctorByToken(token)
 		patient_id = data['id']
 		success = self.controldb.updatePatient(patient_id, data)
 		if(success == False):
 			return self.sendToClientError('Nao foi possivel atualizar medicoes.')
 		
-		patients = self.controldb.getPatients(doctor['_id'])
-		controllevels = ControlLevels(patients)
-		list_priority = controllevels.process()
-		
-		return self.sendToClientOk(list_priority)
-	
-	# Deleta um paciente
-	def deletePatient(self, token, data):
-		if(not ('id' in data)):
-			return self.sendToClientError("Parametros 'id' necessários para deletar o paciente")
-		doctor = self.controldb.getDoctorByToken(token)
-		patient_id = data['id']
-		success = self.controldb.deletePatient(patient_id)
-		if(success == False):
-			return self.sendToClientError('Nao foi possivel deletar o paciente.')
 		return self.sendToClientOk(success)
-	
-	def getListPriority(self, token):
-		doctor = self.controldb.getDoctorByToken(token)
-		patients = self.controldb.getPatientsByDoctor(doctor['_id'])
-		controllevels = ControlLevels(patients)
-		list_priority = controllevels.process()
-		self.sendToClientOk(list_priority)
 
 if __name__ == '__main__':
 	server = ServerMQTT()

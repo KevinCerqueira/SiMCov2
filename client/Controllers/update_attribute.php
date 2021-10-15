@@ -12,13 +12,15 @@
  * de avaliação. Alguns trechos do código podem coincidir com de outros
  * colegas pois estes foram discutidos em sessões tutorias.
 */
-// session_start();
+// define('MYPATH', '../');
+session_start();
 // if (isset($_SESSION['auth'])) {
 // 	header('Location: ' . MYPATH . 'index.php');
 // 	exit;
 // }
 include_once('PublisherController.php');
 $pub = new PublisherController();
-$response = $pub->updateAttribute('61677db9fc5c84664a0bbc6d', 'saturacao', 102);
+var_dump($_SESSION['auth']);
+$response = $pub->updateAttribute('61677db9fc5c84664a0bbc6d', 'saturacao', 95);
 die();
 

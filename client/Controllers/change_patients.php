@@ -13,7 +13,7 @@
  * colegas pois estes foram discutidos em sessões tutorias.
 */
 session_start();
-include_once($_SERVER['DOCUMENT_ROOT'] . '/SiMCov/client/Controllers/ClientController.php');
+include_once($_SERVER['DOCUMENT_ROOT'] . '/SiMCov2/client/Controllers/ClientController.php');
 $client = new ClientController();
 if(isset($_POST['id_patient']) && isset($_POST['updown']) && isset($_POST['attribute'])){
 	$id_patient = $_POST['id_patient'];

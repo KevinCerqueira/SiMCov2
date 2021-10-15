@@ -35,15 +35,15 @@ O intuito deste problema foi a criação de uma API REST utilizando socket puro,
     - XAMPP (v3.3.0) + PHP 7.4: https://www.apachefriends.org/pt_br/download.html
         - **ATENÇÃO**: Baixar o que consta a versão **7.4** do PHP. Não é necessário instalar o php à parte, pois o o mesmo já vem pré configurado no xampp
 2. Caso utilize windows, é necessário verificar se o PHP do XAMPP está setado nas variáveis ambiente do seu computador.
-    - ![variaveis](https://github.com/kevincerqueira/simcov/blob/main/telas/variaveis.png?raw=true)
+    - ![variaveis](https://github.com/kevincerqueira/simcov2/blob/main/telas/variaveis.png?raw=true)
 3. Para utilizar o socket do PHP é necessário habilita-lo no php.ini (C:\xampp\php\php.ini):
     - Basta pesquisar dentro do arquivo o nome 'sockets' e apagar o ponto e virgula (;) que fica na frente do mesmo.
-        - ![phpini](https://github.com/kevincerqueira/simcov/blob/main/telas/phpini.png?raw=true)
+        - ![phpini](https://github.com/kevincerqueira/simcov2/blob/main/telas/phpini.png?raw=true)
 4. Feito tudo isso, confirme que está tudo funcionando, basta abrir o terminar e digitar 'python --version' para verificar se o Python foi instalado corretamente, e para verificar o PHP basta digitar no mesmo terminal 'php -v'. Feito isso confirme se as versões aparecem devidamente.
 5. Após configurado, está na hora de mover o repositório para dentro da pasta C:\xampp\htdocs, como mostrado na imagem:
-    - ![htdocs](https://github.com/kevincerqueira/simcov/blob/main/telas/htdocs.png?raw=true)
+    - ![htdocs](https://github.com/kevincerqueira/simcov2/blob/main/telas/htdocs.png?raw=true)
 6. Agora abra o XAMPP e dê start na opção Apache (o mesmo deve ficar verde):
-    - ![xampp](https://github.com/kevincerqueira/simcov/blob/main/telas/xampp.png?raw=true)
+    - ![xampp](https://github.com/kevincerqueira/simcov2/blob/main/telas/xampp.png?raw=true)
 7. Pronto, agora o front-end da aplicação está rodando, agora é a hora de rodar os servidores. Vá no terminal e execute o arquivo 'servertcp.py' e deixe-o rodando, abra um novo terminal para executar 'serverudp.py' da mesma 
 ```sh
 python servertcp.py
@@ -59,27 +59,27 @@ python serverudp.py
 python simulator.py
 ```
 
-8. Pronto! agora é só acessar a tela inicial do sistema, basta acessar o link 'http://localhost/SiMCov/client' em um navegador
+8. Pronto! agora é só acessar a tela inicial do sistema, basta acessar o link 'http://localhost/SiMCov2/client' em um navegador
 
 ## Telas:
-- Entrar: http://localhost/SiMCov/client/pages/auth/login.php
-    - ![login](https://github.com/kevincerqueira/simcov/blob/main/telas/login.png?raw=true)
-- Cadastro: http://localhost/SiMCov/client/pages/auth/register.php
-    - ![cadastro](https://github.com/kevincerqueira/simcov/blob/main/telas/cadastro.png?raw=true)
-- Dashboard: http://localhost/SiMCov/client/index.php
-    - ![dashboard](https://github.com/kevincerqueira/simcov/blob/main/telas/dashboard.png?raw=true)
-- Lista de prioridade: http://localhost/SiMCov/client/pages/list_priority.php
+- Entrar: http://localhost/SiMCov2/client/pages/auth/login.php
+    - ![login](https://github.com/kevincerqueira/simcov2/blob/main/telas/login.png?raw=true)
+- Cadastro: http://localhost/SiMCov2/client/pages/auth/register.php
+    - ![cadastro](https://github.com/kevincerqueira/simcov2/blob/main/telas/cadastro.png?raw=true)
+- Dashboard: http://localhost/SiMCov2/client/index.php
+    - ![dashboard](https://github.com/kevincerqueira/simcov2/blob/main/telas/dashboard.png?raw=true)
+- Lista de prioridade: http://localhost/SiMCov2/client/pages/list_priority.php
     - Sem pacientes ativos:
-        - ![lista1](https://github.com/kevincerqueira/simcov/blob/main/telas/lista1.png?raw=true)
+        - ![lista1](https://github.com/kevincerqueira/simcov2/blob/main/telas/lista1.png?raw=true)
     - Com pacientes ativos:
-        - ![lista2](https://github.com/kevincerqueira/simcov/blob/main/telas/lista2.png?raw=true)
-- Medir paciente: http://localhost/SiMCov/client/pages/change_patients.php
-    - ![simular_sensores](https://github.com/kevincerqueira/simcov/blob/main/telas/simular_sensores.png?raw=true)
+        - ![lista2](https://github.com/kevincerqueira/simcov2/blob/main/telas/lista2.png?raw=true)
+- Medir paciente: http://localhost/SiMCov2/client/pages/change_patients.php
+    - ![simular_sensores](https://github.com/kevincerqueira/simcov2/blob/main/telas/simular_sensores.png?raw=true)
 - Cadstrar/Deletar paciente: são modais do dashboard
     - Cadastrar:
-        - ![novo_paciente](https://github.com/kevincerqueira/simcov/blob/main/telas/novo_paciente.png?raw=true)
+        - ![novo_paciente](https://github.com/kevincerqueira/simcov2/blob/main/telas/novo_paciente.png?raw=true)
     - Deletar:
-        - ![deletar_paciente1](https://github.com/kevincerqueira/simcov/blob/main/telas/deletar_paciente1.png?raw=true)
-        - ![deletar_paciente2](https://github.com/kevincerqueira/simcov/blob/main/telas/deletar_paciente2.png?raw=true)
+        - ![deletar_paciente1](https://github.com/kevincerqueira/simcov2/blob/main/telas/deletar_paciente1.png?raw=true)
+        - ![deletar_paciente2](https://github.com/kevincerqueira/simcov2/blob/main/telas/deletar_paciente2.png?raw=true)
 ## Construção das pastas
-![contrucaodaspastas](https://github.com/kevincerqueira/simcov/blob/main/telas/contrucaodaspastas.png?raw=true)
+![contrucaodaspastas](https://github.com/kevincerqueira/simcov2/blob/main/telas/contrucaodaspastas.png?raw=true)

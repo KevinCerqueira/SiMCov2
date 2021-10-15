@@ -33,8 +33,8 @@ class ControlLevels:
 		priority_high = []
 		
 		for index in self.list_patients:
-			if(self.list_patients[index]['medicao']):
-				list_patients_on.append([self.default_score, self.list_patients[index]])
+			if(index['medicao']):
+				list_patients_on.append([self.default_score, index])
 		
 		for patient in list_patients_on:
 			if(int(patient[1]['saturacao']) > 95):

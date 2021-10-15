@@ -13,15 +13,16 @@
  * de avaliação. Alguns trechos do código podem coincidir com de outros
  * colegas pois estes foram discutidos em sessões tutorias.
  */
-
+include_once('PublisherController.php');
 /** Classe responsável por enviar e receber informações do servidor. */
 class ClientController
 {
     public $host = 'localhost';
-    public $port = [50000, 60000];
+    public $port = 50000;
     public $count_bytes = 8192;
     public $socket;
     private $token;
+    public $publisher;
 
     /** Construtor */
     public function __construct()
@@ -29,15 +30,17 @@ class ClientController
         // Caso o usuario esteja autentica no sistema.
         if (isset($_SESSION['auth']))
             $this->token = $_SESSION['auth'];
+
+        $this->publisher = new \PublisherController();
     }
 
     /** Coneceta no servidor */
-    private function connect(bool $udp = false)
+    private function connect()
     {
 
-        $this->socket = socket_create(AF_INET, $udp ? SOCK_DGRAM : SOCK_STREAM, $udp ? SOL_UDP : SOL_TCP);
+        $this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 
-        socket_connect($this->socket, $this->host, $this->port[$udp ? 1 : 0]);
+        socket_connect($this->socket, $this->host, $this->port);
     }
 
     /** Fecha a conexão com o servidor */
@@ -47,9 +50,9 @@ class ClientController
     }
 
     /** Envia determinada informação e recebe do servidor */
-    public function send(bool $udp, string $method, string $url, array $data = null)
+    public function send(string $method, string $url, array $data = null)
     {
-        $request = $method . " " . $url . " HTTP/1.1\r\nHost: " . $this->host . $this->port[$udp ? 1 : 0];
+        $request = $method . " " . $url . " HTTP/1.1\r\nHost: " . $this->host . $this->port;
 
         $request .= "\r\nUser-Agent: ClientController\r\n";
         $request .= "Content-Type: application/json\r\n";
@@ -64,9 +67,7 @@ class ClientController
         // Envia informação para o servidor
         $response = socket_write($this->socket, $request, strlen($request));
         
-        // Caso não seja uma conexão UDP, recebe os dados retornados do servidor
-        if (!$udp)
-            socket_recv($this->socket, $response, $this->count_bytes, MSG_WAITALL);
+        socket_recv($this->socket, $response, $this->count_bytes, MSG_WAITALL);
         $this->close();
         return json_decode($response);
     }
@@ -75,7 +76,7 @@ class ClientController
     public function register($username, $password)
     {
         $this->connect();
-        $response = $this->send(false, 'POST', '/register/doctor', ['username' => $username, 'password' => $password]);
+        $response = $this->send('POST', '/register/doctor', ['username' => $username, 'password' => $password]);
         if ($response->success) {
             $this->token = $response->data->token;
             // Deixando o usuário autenticado no sistema
@@ -90,7 +91,7 @@ class ClientController
     public function login($username, $password)
     {
         $this->connect();
-        $response = $this->send(false, 'POST', '/login', ['username' => $username, 'password' => $password]);
+        $response = $this->send('POST', '/login', ['username' => $username, 'password' => $password]);
         if ($response->success) {
             $this->token = $response->data->token;
             $_SESSION["username"] = $username;
@@ -110,26 +111,26 @@ class ClientController
     }
 
     /** Atualiza todos os sensores do paciente */
-    public function updateAttribute(int $id_patient, string $att, $value)
+    public function updateAttribute($id_patient, $att, $value)
     {
-        $this->connect($udp = true);
-        return $this->send(true, 'PATCH', "/update" . '/' . $att, ['id' => $id_patient, 'value' => $value]);
+        $this->publisher->updateAttribute($id_patient, $att, $value);
     }
 
     /** Atualiza um unico sensor do paciente */
-    public function updateAttributeOne(int $id_patient, string $att, int $updown)
+    public function updateAttributeOne($id_patient, $att, $updown)
     {
-        $this->connect($udp = false);
+        $this->connect();
 
-        $response = $this->send(false, 'GET', "/get/patient" . '/' . $id_patient);
+        $response = $this->send('GET', "/get/patient" . '/' . $id_patient);
+
         if ($response->success) {
             $patient = $response->data;
             if ($att != 'temperatura')
                 $new_value = intval($patient->{$att}) + (1 * $updown);
             else
                 $new_value = doubleval($patient->temperatura) + (0.1 * doubleval($updown));
-            $this->connect($udp = true);
-            return $this->send(true, 'PATCH', "/update" . '/' . $att, ['id' => $id_patient, 'value' => $new_value]);
+            
+            $this->publisher->updateAttribute($id_patient, $att, $new_value);
         }
     }
 
@@ -137,27 +138,27 @@ class ClientController
     public function getAll()
     {
         $this->connect();
-        return $this->send(false, 'GET', "/get/patients");
+        return $this->send('GET', "/get/patients");
     }
 
     /** Retorna a lista de prioridade */
     public function getListPriority()
     {
         $this->connect();
-        return $this->send(false, 'GET', "/get/list/priority");
+        return $this->send('GET', "/get/list/priority");
     }
 
     /** Registra um novo paciente */
     public function registerPatient($nome, $idade, $sexo)
     {
         $this->connect();
-        return $this->send(false, 'POST', '/register/patient', ['nome' => $nome, 'idade' => $idade, 'sexo' => $sexo]);
+        return $this->send('POST', '/register/patient', ['nome' => $nome, 'idade' => $idade, 'sexo' => $sexo]);
     }
 
     /** Deleta um paciente */
     public function deletePatient($id_patient)
     {
         $this->connect();
-        return $this->send(false, 'DELETE', '/delete/patient', ['id' => $id_patient]);
+        return $this->send('DELETE', '/delete/patient', ['id' => $id_patient]);
     }
 }

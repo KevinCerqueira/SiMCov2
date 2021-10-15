@@ -44,7 +44,7 @@ include_once('templates/header.php');
 		font-size: 30px !important;
 	}
 </style>
-<title>Dashboard</title>
+<title>Lista de Prioridades</title>
 <div class="p-5 bg-light m-0" style="height: 100vh;">
 	<div class="row bg-white p-3 rounded shadow-sm mb-5">
 
@@ -133,14 +133,16 @@ include_once('templates/header.php');
 				beforeSend: function() {
 					$('#alert-error').attr('hidden', '');
 					$('#alert-text-error').text('');
-					$('.lists').empty();
-					if ($('#count').text() == '1') {
+					
+					if ($('#count').text() == '0') {
 						$('#loading').removeAttr('hidden');
 					}
 				},
 				success: function(data) {
 					response = JSON.parse(data);
 					if (response.success) {
+						$('.lists').empty();
+						
 						$("#high").append(response.data.high);
 						$("#medium").append(response.data.medium);
 						$("#normal").append(response.data.normal);

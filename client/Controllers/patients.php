@@ -13,7 +13,7 @@
  * colegas pois estes foram discutidos em sessões tutorias.
 */
 include_once(MYPATH . 'auth.php');
-include_once($_SERVER['DOCUMENT_ROOT'] . '/SiMCov/client/Controllers/ClientController.php');
+include_once($_SERVER['DOCUMENT_ROOT'] . '/SiMCov2/client/Controllers/ClientController.php');
 $client = new ClientController();
 $search_patients = $client->getAll();
 ?>

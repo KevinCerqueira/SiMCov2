@@ -15,7 +15,7 @@
 define('MYPATH', '../');
 include_once(MYPATH . 'auth.php');
 include_once('templates/header.php');
-include_once($_SERVER['DOCUMENT_ROOT'] . '/SiMCov/client/Controllers/ClientController.php');
+include_once($_SERVER['DOCUMENT_ROOT'] . '/SiMCov2/client/Controllers/ClientController.php');
 $client = new ClientController();
 $response = $client->getAll();
 ?>
@@ -47,7 +47,7 @@ $response = $client->getAll();
 		font-size: 30px !important;
 	}
 </style>
-<title>Dashboard</title>
+<title>Alterar Pacientes</title>
 <div class="p-5 bg-light m-0" style="height: 100vh;">
 	<div class="p-0 bg-white p-3 rounded shadow-sm">
 

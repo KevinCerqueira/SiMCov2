@@ -96,7 +96,7 @@ class ServerTCP:
 		for index in request_clean:
 			if(index == '{'):
 				data = json.loads(request_clean[request_clean.find('{') :])
-		
+
 		# Adicionando a requisição a fila de requisições
 		self.queue_request.append({'client': client,'method': method, 'path': path, 'data': data, 'token': token})
 	
@@ -110,6 +110,9 @@ class ServerTCP:
 	
 	# Função responsável pelo roteamente, identifica os metodos e as rotas requisitadas
 	def routing(self, client, method, path, data, token):
+
+		print({'client': client,'method': method, 'path': path, 'data': data, 'token': token})
+
 		if(method == ''):
 			self.sendToClientError(client, 'Requisicao invalida')
 		
@@ -263,7 +266,7 @@ class ServerTCP:
 		doctor = self.controldb.getDoctorByToken(token)
 		if(doctor == None):
 			self.sendToClientError(client, 'Este doutor nao existe na base de dados.')
-		return self.sendToClientOk(client, self.controldb.getPatient(data['id']))
+		return self.sendToClientOk(client, self.controldb.getPatient(data))
 	
 	# Atualiza determinado atributo de um paciente
 	def updatePacient(self, client, token, data, attr):

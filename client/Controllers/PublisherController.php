@@ -21,14 +21,14 @@ require_once('vendor/php-mqtt/client/src/ConnectionSettings.php');
 /** Classe responsável por enviar e receber informações do servidor. */
 class PublisherController
 {
-    public $host = 'localhost';
-    public $port = 60000;
+    public $host = 'mqtt.eclipseprojects.io';
+    public $port = 1883;
     private $token;
     private $clean_session = false;
     private $connectionSettings;
     private $topic = 'SIMCOV/channel1';
     private $mqtt;
-    private $clientId = 'publisher-controller';
+    private $clientId = 'SiMCov_publisher';
 
     /** Construtor */
     public function __construct()
@@ -49,7 +49,6 @@ class PublisherController
     /** Coneceta no servidor */
     private function connect()
     {
-
         $this->mqtt->connect($this->connectionSettings, $this->clean_session);
     }
 
@@ -77,7 +76,7 @@ class PublisherController
         // Envia informação para o servidor
         var_dump($request);
         $this->mqtt->publish($this->topic, json_encode($request), 0, true);
-        $this->close;
+        $this->close();
         return;
     }
 

@@ -1,11 +1,12 @@
 import paho.mqtt.client as mqtt
 import json
 
-client = mqtt.Client()
-client.connect('localhost', 50000)
+client = mqtt.Client('SiMCov_publisher')
+client.connect('mqtt.eclipseprojects.io', 8883)
+# client.connect('localhost', 60000)
 send = {'nome': 'novopat2'}
 HOST = 'localhost'
-PORT = 50000
+PORT = 60000
 # send = {'id': '1'}
 # send = {}
 # client.sendall(str.encode('Kevin'))
@@ -19,14 +20,14 @@ request = '{} {} HTTP/1.1\r\nHost: {}\r\nUser-Agent: ClientController\r\nContent
 # while True:
 client.publish("SIMCOV/channel1", request)
 
-def on_connect(client, userdata, flags, rc):
-    print("Connected to a broker!")
-    client.subscribe("LINTANGtopic/test")
+# def on_connect(client, userdata, flags, rc):
+#     print("Connected to a broker!")
+#     client.subscribe("LINTANGtopic/test")
 
-def on_message(client, userdata, message):
-    print(message.payload.decode())
+# def on_message(client, userdata, message):
+#     print(message.payload.decode())
 
-while True:
-    client.on_connect = on_connect
-    client.on_message = on_message
-    client.loop_forever()
+# while True:
+#     client.on_connect = on_connect
+#     client.on_message = on_message
+#     client.loop_forever()

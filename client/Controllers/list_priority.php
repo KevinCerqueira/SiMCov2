@@ -15,11 +15,11 @@
 
 // Organiza os grupos e deixando o front-end mais agradavél
 session_start();
-include_once($_SERVER['DOCUMENT_ROOT'] . '/SiMCov/client/Controllers/ClientController.php');
+include_once($_SERVER['DOCUMENT_ROOT'] . '/SiMCov2/client/Controllers/ClientController.php');
 $client = new ClientController();
 $response = $client->getListPriority();
 if ($response->success) {
-	$high = "<p class='h5 text-white p-1 bg-success'>Sem pacientes para este nível.</p>";
+	$high = "<p class='text-sem-pacientes h5 text-white p-1 bg-success'>Sem pacientes para este nível.</p>";
 	$medium = $high;
 	$normal = $medium;
 

@@ -97,7 +97,7 @@ class ControlDB:
 		id = ObjectId(id)
 		try:
 			patient = self.patient_db.find_one({'_id': id})
-			return patient
+			return {'id': str(patient['_id']), 'nome': patient['nome'], 'idade': patient['idade'], 'sexo': patient['sexo'], 'medicao': patient['medicao'], 'saturacao': patient['saturacao'], 'pressao': patient['pressao'], 'batimento': patient['batimento'], 'temperatura': patient['temperatura']}
 		except:
 			return None
 	
@@ -140,6 +140,7 @@ class ControlDB:
 	def checkToken(self, auth):
 		try:
 			doctor = self.doctor_db.find_one({'auth': auth})
+			if(doctor == None): return False
 			return True
 		except:
 			return False
@@ -147,8 +148,14 @@ class ControlDB:
 	def getDoctorByToken(self, auth):
 		try:
 			doctor = self.doctor_db.find_one({'auth': auth})
-			print(doctor['_id'])
 			return doctor
+		except:
+			return None
+	
+	def getIDDoctorByToken(self, auth):
+		try:
+			doctor = self.doctor_db.find_one({'auth': auth})
+			return str(doctor['_id'])
 		except:
 			return None
 	
