@@ -18,6 +18,7 @@ include_once('auth.php');
 include_once('pages/templates/header.php');
 include_once('pages/templates/register_patient.php');
 include_once('pages/templates/delete_patient.php');
+include_once('pages/templates/list_patients.php');
 ?>
 <style>
 	#menu .btn {
@@ -37,6 +38,10 @@ include_once('pages/templates/delete_patient.php');
 	}
 
 	i {
+		font-size: 25px !important;
+	}
+
+	.icon-g {
 		color: #FFF;
 		font-size: 50px !important;
 	}
@@ -52,8 +57,17 @@ include_once('pages/templates/delete_patient.php');
 						<i class="fa fa-user-md" style="color: #000;"></i>
 					</p>
 				</div>
-				<div class="col-md-2">User:
-					<p class="h5 m-0"><?php echo $_SESSION['username']?></p>
+				<div class="col-md-2 row">
+					<div class="col-md-10">
+						<label class="h5 m-0 mt-3">
+							<?php echo $_SESSION['username'] ?>
+						</label>
+					</div>
+					<div class="col-md-2">
+						<label id="logout" class="btn text-dark">
+							<i class="fa fa-sign-out text-dark" style="margin-top: 10px;"></i>
+						</label>
+					</div>
 				</div>
 				<div hidden id="alert-error" class="alert alert-danger mt-3" role="alert">
 					<p id="alert-text-error" class="h5 m-0"></p>
@@ -65,35 +79,38 @@ include_once('pages/templates/delete_patient.php');
 				<div class="col-md-4">
 					<button class="btn btn-primary btn-block" data-bs-toggle="modal" data-bs-target="#register-patient">
 						<p class="h2">Registrar novo paciente</p>
-						<i class="fa fa-user"></i>
+						<i class="fa fa-address-book icon-g"></i>
+					</button>
+				</div>
+				<div class="col-md-4">
+					<button class="btn btn-success btn-block" data-bs-toggle="modal" data-bs-target="#list-patients-priority">
+						<p class="h2">Monitorar paciente</p>
+						<i class="fa fa-user icon-g"></i>
 					</button>
 				</div>
 				<div class="col-md-4">
 					<a id="list-priority" class="btn btn-danger" href="pages/list_priority.php">
 						<p class="h2">Ver lista de prioridade</p>
-						<i class="fa fa-th-list"></i>
+						<i class="fa fa-th-list icon-g"></i>
 					</a>
 				</div>
-				<div class="col-md-4">
-					<a class="btn btn-warning" href="pages/change_patients.php">
-						<p class="h2">Medir um paciente</p>
-						<i class="fa fa-heartbeat"></i>
-					</a>
-				</div>
+
 			</div>
 			<div class="row">
 				<div class="col-md-6">
 					<button class="btn btn-danger btn-block btn-apagar-paciente" data-bs-toggle="modal" data-bs-target="#delete-patient">
 						<p class="h2">Apagar um paciente</p>
-						<i class="fa fa-trash"></i>
+						<i class="fa fa-trash icon-g"></i>
 					</button>
 				</div>
 				<div class="col-md-6">
-					<button id="logout" class="btn btn-warning">
-						<p class="h2 text-white">Sair do sistema
-						</p>
-						<i class="fa fa-sign-out mt-2"></i>
-					</button>
+					<a class="btn btn-warning" href="pages/change_patients.php">
+						<p class="h2">Medir pacientes</p>
+						<i class="fa fa-heartbeat icon-g"></i>
+					</a>
+				</div>
+				<div class="col-md-4">
+
 				</div>
 			</div>
 

@@ -97,7 +97,7 @@ class ControlDB:
 		id = ObjectId(id)
 		try:
 			patient = self.patient_db.find_one({'_id': id})
-			return {'id': str(patient['_id']), 'nome': patient['nome'], 'idade': patient['idade'], 'sexo': patient['sexo'], 'medicao': patient['medicao'], 'saturacao': patient['saturacao'], 'pressao': patient['pressao'], 'batimento': patient['batimento'], 'temperatura': patient['temperatura']}
+			return {'id': str(patient['_id']), 'nome': patient['nome'], 'idade': patient['idade'], 'sexo': patient['sexo'], 'medicao': patient['medicao'], 'saturacao': patient['saturacao'], 'pressao': patient['pressao'], 'batimento': patient['batimento'], 'temperatura': "{:.2f}".format(round(float(patient['temperatura']), 2))}
 		except:
 			return None
 	

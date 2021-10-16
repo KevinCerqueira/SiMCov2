@@ -15,6 +15,7 @@
 	<link href="<?php echo MYPATH; ?>vendor/select2/css/select2.min.css" rel="stylesheet">
 	<script src="<?php echo MYPATH; ?>vendor/select2/js/select2.min.js"></script>
 	<link rel="shortcut icon" href="<?php echo MYPATH; ?>assets/icon.png" type="image/x-icon">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.js" integrity="sha512-0XDfGxFliYJPFrideYOoxdgNIvrwGTLnmK20xZbCAvPfLGQMzHUsaqZK8ZoH+luXGRxTrS46+Aq400nCnAT0/w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 
 <body>

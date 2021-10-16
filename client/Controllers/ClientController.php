@@ -140,6 +140,13 @@ class ClientController
         $this->connect();
         return $this->send('GET', "/get/patients");
     }
+    
+    /** Retorna um paciente */
+    public function getPatient($id)
+    {
+        $this->connect();
+        return $this->send('GET', "/get/patient/" . strval($id));
+    }
 
     /** Retorna a lista de prioridade */
     public function getListPriority()

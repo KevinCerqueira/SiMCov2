@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Componente Curricular: MI Concorrência e Conectividade
  * Autor: Kevin Cerqueira Gomes
@@ -12,14 +11,14 @@
  * código, e estou ciente que estes trechos não serão considerados para fins
  * de avaliação. Alguns trechos do código podem coincidir com de outros
  * colegas pois estes foram discutidos em sessões tutorias.
- */
+*/
 session_start();
-include_once('PublisherController.php');
-$pub = new PublisherController();
-if (isset($_POST['id_patient']) &&  isset($_POST['attribute']) && isset($_POST['value'])) {
-	$id_patient = $_POST['id_patient'];
-	$attr = $_POST['attribute'];
-	$value = $_POST['value'];
-	$response = $pub->updateAttribute($id_patient, $attr, $value);
+include_once($_SERVER['DOCUMENT_ROOT'] . '/SiMCov2/client/Controllers/ClientController.php');
+if(isset($_GET['id']) && $_GET['id']){
+	$client = new ClientController();
+	$response = $client->getPatient($_GET['id']);
+	echo json_encode($response);
+}else{
+	echo json_encode(['success' => false, 'error' => 'Selecione um paciente']);
 }
 die();

@@ -68,13 +68,13 @@ class ControlLevels:
 				patient[0] = patient[0] + 7
 			
 			# Saturacao
-			if(patient[1]['saturacao'] <= 70):
+			if(int(patient[1]['saturacao']) <= 70):
 				patient[0] = patient[0] + 40
-			elif(patient[1]['saturacao'] <= 80):
+			elif(int(patient[1]['saturacao']) <= 80):
 				patient[0] = patient[0] + 30
-			elif(patient[1]['saturacao'] > 80 and patient[1]['saturacao'] <= 90):
+			elif(int(patient[1]['saturacao']) > 80 and int(patient[1]['saturacao']) <= 90):
 				patient[0] = patient[0] + 20
-			elif(patient[1]['saturacao'] > 90 and patient[1]['saturacao'] <= 95):
+			elif(int(patient[1]['saturacao']) > 90 and int(patient[1]['saturacao']) <= 95):
 				patient[0] = patient[0] + 5
 				
 			# Temperatura
