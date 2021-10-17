@@ -14,7 +14,7 @@
  * colegas pois estes foram discutidos em sessões tutorias.
  */
 ?>
-<div class="modal fade" id="register-patient" tabindex="-1" aria-labelledby="register-patientLabel" aria-hidden="true">
+<div class="modal fade register-modal" id="register-patient" tabindex="-1" aria-labelledby="register-patientLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -57,6 +57,11 @@
 	</div>
 </div>
 <script>
+	let reload = false;
+	$('.register-modal').on('hidden.bs.modal', function() {
+		if(reload)
+			location.reload();
+	});
 	$('#form-register-patient').submit(function(event) {
 		event.preventDefault();
 		$.ajax({
@@ -77,6 +82,7 @@
 						'success'
 					);
 					$('.inputs').val('');
+					reload = true;
 				} else {
 					Swal.fire(
 						'Houve um erro ao cadastrar o paciente.',
