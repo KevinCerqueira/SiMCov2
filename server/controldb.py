@@ -18,6 +18,7 @@ import json
 import pymongo
 from pymongo import MongoClient
 from bson.objectid import ObjectId
+import platform
 
 # Classe para controlar a base de dados.
 class ControlDB:
@@ -39,7 +40,11 @@ class ControlDB:
 		self.mqtt = self.database.mqtt
 			
 	def env(self, var):
-		with open(os.path.dirname(os.path.realpath(__file__)) + '\\.env', 'r', encoding='utf-8') as file_env:
+		env = '\\.env'
+		if(platform.system() == 'Linux'):
+			env = '/.env'
+			
+		with open(os.path.dirname(os.path.realpath(__file__)) + env, 'r', encoding='utf-8') as file_env:
 			line = file_env.readline()
 			while(line):
 				content = line.split('=')

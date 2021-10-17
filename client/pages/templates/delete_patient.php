@@ -45,7 +45,7 @@ include_once('Controllers/patients.php');
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
 					<button id="btn-deletar" type="submit" class="btn btn-danger">
 						<p id="txt-deletar" class="m-0">Deletar</p>
-						<div hidden id="spinner" class="spinner-border text-light" role="status">
+						<div hidden id="spinner-delete" class="spinner-border text-light" role="status">
 							<span class="visually-hidden">Loading...</span>
 						</div>
 					</button>
@@ -79,7 +79,7 @@ include_once('Controllers/patients.php');
 				beforeSend: function() {
 					$('#txt-deletar').attr('hidden', '');
 					$('#btn-deletar').attr('disabled', '');
-					$('#spinner').removeAttr('hidden');
+					$('#spinner-delete').removeAttr('hidden');
 				},
 				success: function(data) {
 					response = JSON.parse(data);
@@ -110,7 +110,7 @@ include_once('Controllers/patients.php');
 				complete: function() {
 					$('#txt-deletar').removeAttr('hidden');
 					$('#btn-deletar').removeAttr('disabled');
-					$('#spinner').attr('hidden', '');
+					$('#spinner-delete').attr('hidden', '');
 				}
 			});
 		});
