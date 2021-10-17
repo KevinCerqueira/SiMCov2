@@ -177,8 +177,6 @@ class ServerTCP:
 			self.routeNotFound(client)
 		
 		return client.close()
-		# self.server_socket.close()
-		# sys.exit()
 	
 	# Fecha a conexão do cliente
 	def closeConnection(self, client):
@@ -188,10 +186,6 @@ class ServerTCP:
 	def closeSocket(self, client):
 		print('SERVIDOR FECHARA AO TERMINAR AS CONEXOES EXISTENTES')
 		self.close = True
-	
-	# Envia dados para o cliente
-	# def sendToClient(self, client, obj):
-	# 	return client.sendall(bytes(obj.encode('utf-8')))
 	
 	# Envia dados para o cliente em caso de sucesso
 	def sendToClientOk(self, client, obj):
