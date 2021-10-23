@@ -51,7 +51,7 @@ if (isset($_GET['id']) && $_GET['id']) {
 		font-size: 30px !important;
 	}
 </style>
-<title>Lista de Prioridades</title>
+<title>Monitorar paciente</title>
 <div class="p-5 bg-light m-0" style="height: 100vh;">
 	<div class="row bg-white p-3 rounded shadow-sm mb-5">
 
