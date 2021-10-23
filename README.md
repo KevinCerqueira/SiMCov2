@@ -100,7 +100,7 @@ python simulator.py
 - Monitorar Paciente: Selecione o paciente via modal no dashboard
     - Selecione o paciente no Modal:
         - ![monitorar1](https://github.com/kevincerqueira/simcov2/blob/main/telas/monitorar_paciente1.png?raw=true)
-    - Monitorando o paciente:
+    - Após selecionado será redirecionado pra tela de monitoração:
         - ![monitorar2](https://github.com/kevincerqueira/simcov2/blob/main/telas/monitorar_paciente2.png?raw=true)
 - Lista de prioridade: http://localhost/SiMCov2/client/pages/list_priority.php
     - Sem pacientes ativos:
