@@ -1,6 +1,5 @@
 # SiMCov2 - Sistema de Monitoramento de COVID-19 (v2)
-O intuito deste problema foi a criação de uma comunicação utilizando MQTT (além de uma API REST utilizando socket puro), onde sensores como oxímetro, termômetro, esfigmomanômetro e frequencímetro (hardwares) podessem enviar dados via MQTT para o servidor, e o servidor enviasse via socket TCP os dados para o cliente, que nesse caso seria um médico (a), e o mesmo visse os dados de forma ordenada e prioritária as informações e fosse alertado em casos de emergências.
-OBS: SiMCov2 é uma versão melhorada do SiMCov (https://github.com/KevinCerqueira/SiMCov) 
+O intuito deste problema foi a criação de uma comunicação utilizando MQTT (além de uma API REST utilizando socket puro), onde sensores como oxímetro, termômetro, esfigmomanômetro e frequencímetro (hardwares) podessem enviar dados via MQTT para o servidor, e o servidor enviasse via API REST (socket TCP) os dados para o cliente, que nesse caso seria um médico (a), e o mesmo visse os dados de forma ordenada e prioritária as informações e fosse alertado em casos de emergências. SiMCov2 é uma versão melhorada do SiMCov (https://github.com/KevinCerqueira/SiMCov) 
 ## Tecnologias utilizadas:
 - Python 3.8 (Necessário ser essa versão)
 - PHP 7.4.16
