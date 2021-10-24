@@ -28,7 +28,7 @@ class PublisherController
     private $connectionSettings;
     private $topic = 'SIMCOV/channel1';
     private $mqtt;
-    private $clientId = 'SiMCov_publisher';
+    private $clientId = 'SiMCov_publisher_';
 
     /** Construtor */
     public function __construct()
@@ -36,6 +36,7 @@ class PublisherController
         // Caso o usuario esteja autentica no sistema.
         if (isset($_SESSION['auth']))
             $this->token = $_SESSION['auth'];
+        $this->clientId .= strval(rand(1, 1000) * rand(1, 1000)) . strval(rand(1, 1000));
         $connectionSettings  = new \PhpMqtt\Client\ConnectionSettings();
         $connectionSettings->setUsername(null)
             ->setPassword(null)
