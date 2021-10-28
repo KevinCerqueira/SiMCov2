@@ -117,6 +117,12 @@ class ControlDB:
 		except:
 			return None
 	
+	def getAllPatients(self):
+		try:
+			return self.patient_db.find({})
+		except:
+			return None
+	
 	def updatePatient(self, id, values):
 		try:
 			values = {'$set': values}
@@ -163,4 +169,3 @@ class ControlDB:
 			return str(doctor['_id'])
 		except:
 			return None
-	

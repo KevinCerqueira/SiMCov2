@@ -15,41 +15,36 @@ import time
 import random
 from random import randint
 import os
-import json
 import threading
+from controldb import ControlDB
+from bson.objectid import ObjectId
 
 # Classe responsável por alterar aleatóriamente os valores dos sensores
 class Simulator:
-	path = ''
 	signals = [-1, 1]
-	folders = ''
 	thread = None
 	
 	def __init__(self):
-		self.path = os.path.dirname(os.path.realpath(__file__)) + '\\database\\patients'
-		self.folders = os.listdir(self.path)
 		self.thread = threading.Thread(target=self.work)
 		
 	def start(self):
 		self.thread.start()
 		
 	def work(self):
+		print('starting...')
+		db = ControlDB()
 		while True:
 			# Atualiza sempre a cada (de 4 a 6 segundos)
 			time.sleep(randint(4,6))
-			for folder in self.folders:
-				with open(self.path + '\\' + folder + '\\patients.json', 'r', encoding='utf-8') as db_read:
-					data_read = json.load(db_read)
-					for patient in data_read:
-						data_read[str(patient)]['medicao'] = True
-						data_read[str(patient)]['saturacao'] = self.change(int(data_read[str(patient)]['saturacao']), 50, 99)
-						data_read[str(patient)]['pressao'] = self.change(int(data_read[str(patient)]['pressao']), 110, 140)
-						data_read[str(patient)]['batimento'] = self.change(int(data_read[str(patient)]['batimento']), 50, 130)
-						data_read[str(patient)]['temperatura'] = self.changeTemperatura(float(data_read[str(patient)]['temperatura']))
-					
-					with open(self.path + '\\' + folder + '\\patients.json', 'w', encoding='utf-8') as db_write:
-						json.dump(data_read, db_write, ensure_ascii=False, indent=4)
-	
+			for patient in db.getAllPatients():
+				print('LOG :: DEBUG updating patient id: ', str(patient['_id']))
+				saturacao = self.change(int(patient['saturacao']), 50, 99)
+				pressao = self.change(int(patient['pressao']), 110, 140)
+				batimento = self.change(int(patient['batimento']), 50, 130)
+				temperatura = self.changeTemperatura(float(patient['temperatura']))
+				result = db.updatePatient(patient['_id'], {'saturacao': saturacao, 'pressao': pressao, 'batimento': batimento, 'temperatura': temperatura})
+				print('LOG :: DEBUG result: ', result)
+				
 	# Muda os valores
 	def change(self, value, v_start, v_end):
 		if(value == 0):
